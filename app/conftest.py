@@ -14,3 +14,10 @@ async def client():
         base_url="http://test",
     ) as c:
         yield c
+
+@pytest_asyncio.fixture
+async def sample_task(client):
+    main.tasks.clear()  # очищаем хранилище перед каждым тестом
+    main.next_id = 1
+    response = await client.post('/tasks', json={"title": "sample", "description": "for tests"})
+    return response.json()['id']
